@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langgraph.checkpoint.memory import MemorySaver
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 
 load_dotenv()
 
@@ -12,7 +12,8 @@ llm=ChatGroq(
     model="llama-3.3-70b-versatile",
 )
 def chatbot_mode(state:MessagesState):
-    response= llm.invoke(state['messages'])
+    prompt=SystemMessage(content=" you are a helpful ,friendly and straight forward AI assistant named Kane .You are concise ,clear and always respond in a warm and straight forward tone .")
+    response= llm.invoke([prompt] + state['messages'])
     return{"messages":[response]}
 
 builder=StateGraph(MessagesState)
